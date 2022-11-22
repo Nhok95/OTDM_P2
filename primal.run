@@ -1,3 +1,8 @@
+reset;
 model primal.mod;
 data data/data.dat;
+option solver cplex;
+problem svm_primal: w, gamma, s, primal, c1, c2;
+solve svm_primal;
+display w, gamma, s;
 show;
