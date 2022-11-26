@@ -2,6 +2,23 @@ reset;
 model dual.mod;
 data data/data.dat;
 option solver cplex;
-problem svm_dual: lambda, dual, c1
+problem svm_dual: lambda, dual, c1;
 solve svm_dual;
 display lambda;
+
+# w = AT Y lambda
+
+param w {1..n};
+let {i in {1..n}} w[i] := sum {j in {1..m}}  lambda[i]*y[i]*a[j,i];   
+display w;
+
+param gamma;
+for {i in {1..m}} {
+	if lambda[i] > 0.001 and lambda[i] < nu then { # lambda > 0; lambda < nu
+		 let gamma := (1 / y[i]) - sum{j in {1..n}} w[j]*a[i,j];
+		 break;
+	}
+}
+
+display gamma;
+
