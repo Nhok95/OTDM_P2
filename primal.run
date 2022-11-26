@@ -1,8 +1,42 @@
 reset;
 model primal.mod;
-data data/data.dat;
+
+param m_test > 0;
+param a_test {1..m_test, 1..n};
+param y_test {1..m_test};
+
+data data/ionosphere.dat;
 option solver cplex;
 problem svm_primal: w, gamma, s, primal, c1, c2;
 solve svm_primal;
-display w, gamma, s;
-show;
+#display w, gamma, s;
+#show;
+display w, gamma;
+
+
+## Validation
+
+param result;
+param counter;
+let counter := 0;
+for {i in {1..m_test}} {
+	
+	
+	let result := sum{j in {1..n}} w[j]*a_test[i,j] + gamma;
+	
+	if result > 0 then { 
+		if y_test[i] == 1 then {
+			let counter := counter +1;
+		}
+	}
+	else { 
+		if y_test[i] == -1 then {
+			let counter := counter +1;
+		} 
+	}
+	
+	#let predict[i] := sum{j in {1..n}} w[j]*a_test[i,j] + gamma
+	
+}
+
+display 100*counter/m_test;

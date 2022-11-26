@@ -1,24 +1,58 @@
 reset;
 model dual.mod;
-data data/data.dat;
+
+param m_test > 0;
+param a_test {1..m_test, 1..n};
+param y_test {1..m_test};
+
+data data/ionosphere.dat;
 option solver cplex;
 problem svm_dual: lambda, dual, c1;
 solve svm_dual;
-display lambda;
+#display lambda;
 
-# w = AT Y lambda
-
+# calculating w
 param w {1..n};
 let {i in {1..n}} w[i] := sum {j in {1..m}}  lambda[j]*y[j]*a[j,i];   
 display w;
 
+# calculating gamma
 param gamma;
 for {i in {1..m}} {
-	if lambda[i] > 0.001 and lambda[i] < nu then { # lambda > 0; lambda < nu
-		 let gamma := (1 / y[i]) - sum{j in {1..n}} w[j]*a[i,j];
-		 break;
+	if lambda[i] > 0.001 and lambda[i] < nu-0.001 then { # lambda > 0; lambda < nu
+		let gamma := (1 / y[i]) - sum{j in {1..n}} w[j]*a[i,j];
+		break;
 	}
 }
 
-display gamma; #-4.19951  -> -4.08776
+display gamma;
+
+
+## Validation
+
+param result;
+param counter;
+let counter := 0;
+for {i in {1..m_test}} {
+	
+	
+	let result := sum{j in {1..n}} w[j]*a_test[i,j] + gamma;
+	
+	if result > 0 then { 
+		if y_test[i] == 1 then {
+			let counter := counter +1;
+		}
+	}
+	else { 
+		if y_test[i] == -1 then {
+			let counter := counter +1;
+		} 
+	}
+	
+	#let predict[i] := sum{j in {1..n}} w[j]*a_test[i,j] + gamma
+	
+}
+
+display 100*counter/m_test;
+
 
