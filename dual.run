@@ -9,7 +9,7 @@ display lambda;
 # w = AT Y lambda
 
 param w {1..n};
-let {i in {1..n}} w[i] := sum {j in {1..m}}  lambda[i]*y[i]*a[j,i];   
+let {i in {1..n}} w[i] := sum {j in {1..m}}  lambda[j]*y[j]*a[j,i];   
 display w;
 
 param gamma;
@@ -20,5 +20,5 @@ for {i in {1..m}} {
 	}
 }
 
-display gamma;
+display gamma; #-4.19951  -> -4.08776
 
