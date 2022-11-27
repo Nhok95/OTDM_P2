@@ -5,7 +5,7 @@ param m_test > 0;
 param a_test {1..m_test, 1..n};
 param y_test {1..m_test};
 
-data data/ionosphere.dat;
+data data/data_2000.dat;
 option solver cplex;
 problem svm_dual: lambda, dual, c1;
 solve svm_dual;
@@ -48,8 +48,6 @@ for {i in {1..m_test}} {
 			let counter := counter +1;
 		} 
 	}
-	
-	#let predict[i] := sum{j in {1..n}} w[j]*a_test[i,j] + gamma
 	
 }
 

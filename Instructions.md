@@ -16,3 +16,7 @@ To run AMPL IDE:
 
 To run AMPL CLI:
 - go to ampl_mswin64/ and run **sw.exe**
+
+## Extra data
+
+Source: https://www.kaggle.com/code/ryanholbrook/binary-classification/tutorial
